@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Valentines Day</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .gradient-background {
+      background: rgb(255, 208, 229);
+      background: linear-gradient(180deg, rgba(255, 208, 229, 1) 0%, rgba(255, 232, 242, 1) 36%, rgba(255, 255, 255, 1) 100%);
+    }
+
+    .bounce2 {
+      animation: bounce2 2s ease infinite;
+    }
+
+    @keyframes bounce2 {
+      0%, 20%, 50%, 80%, 100% {
+        transform: translateY(0);
+      }
+      40% {
+        transform: translateY(-20px);
+      }
+      60% {
+        transform: translateY(-10px);
+      }
+    }
+
+    .video-container {
+      position: absolute;
+      width: 150px; /* Square size */
+      height: 150px; /* Square size */
+      overflow: hidden;
+      border-radius: 10px;
+      will-change: transform; /* Optimize for animation */
+    }
+
+    .video-container video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    /* Disco effect */
+    @keyframes disco {
+      0% {
+        background: linear-gradient(45deg, #ff007f, #00ff7f, #7f00ff, #ff7f00);
+      }
+      25% {
+        background: linear-gradient(45deg, #00ff7f, #7f00ff, #ff7f00, #ff007f);
+      }
+      50% {
+        background: linear-gradient(45deg, #7f00ff, #ff7f00, #ff007f, #00ff7f);
+      }
+      75% {
+        background: linear-gradient(45deg, #ff7f00, #ff007f, #00ff7f, #7f00ff);
+      }
+      100% {
+        background: linear-gradient(45deg, #ff007f, #00ff7f, #7f00ff, #ff7f00);
+      }
+    }
+
+    .disco-effect {
+      animation: disco 2s linear infinite;
+    }
+
+    /* Aggressive disco pulse effect for the photo */
+    @keyframes discoPulse {
+      0%, 100% {
+        transform: scale(1);
+        box-shadow: 0 0 30px #ff007f, 0 0 60px #00ff7f, 0 0 90px #7f00ff, 0 0 120px #ff7f00;
+      }
+      50% {
+        transform: scale(1.2); /* More aggressive scaling */
+        box-shadow: 0 0 60px #ff007f, 0 0 90px #00ff7f, 0 0 120px #7f00ff, 0 0 150px #ff7f00;
+      }
+    }
+
+    .disco-pulse {
+      animation: discoPulse 0.5s ease-in-out infinite; /* Faster animation */
+    }
+
+    /* Fast rotation effect */
+    @keyframes fastRotate {
+      0% {
+        transform: rotate(0deg);
+      }
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+
+    .fast-rotate {
+      animation: fastRotate 0.5s linear infinite; /* Very fast rotation */
+    }
+  </style>
+</head>
+<body class="gradient-background">
+  <div class="flex items-center justify-center h-screen">
+    <div class="flex flex-col items-center p-4">
+      <img id="imageDisplay" src="./images/image1.gif" alt="Cute kitten with flowers" class="rounded-md h-[300px]" style="object-fit: cover;" />
+      <h2 id="valentineQuestion" class="text-4xl font-bold italic text-[#bd1e59] my-4">Vrei sa fi my Valentine?</h2>
+      <div class="flex gap-4 pt-[20px] items-center" id="responseButtons">
+        <button id="yesButton"
+          class="bounce2 inline-flex items-center justify-center whitespace-nowrap rounded-md text-[20px] font-medium disabled:pointer-events-none disabled:opacity-50 hover:bg-green-400 min-h-12 min-w-[75px] px-4 py-2 bg-green-500 text-white transition">
+          Da
+        </button>
+        <button id="noButton"
+          class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-[20px] font-medium transition disabled:pointer-events-none disabled:opacity-50 hover:bg-red-700 h-12 min-w-[75px] w-auto px-4 py-2 bg-red-500 text-white">
+          Nu
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    import confetti from 'https://cdn.skypack.dev/canvas-confetti';
+    const yesButton = document.getElementById('yesButton');
+    const noButton = document.getElementById('noButton');
+    const imageDisplay = document.getElementById('imageDisplay');
+    const valentineQuestion = document.getElementById('valentineQuestion');
+    const responseButtons = document.getElementById('responseButtons');
+    const body = document.body;
+  
+    let noClickCount = 0;
+    let buttonHeight = 48; // Starting height in pixels
+    let buttonWidth = 80;
+    let fontSize = 20; // Starting font size in pixels
+    const imagePaths = [
+      "./images/image1.gif",
+      "./images/image2.gif",
+      "./images/image3.gif",
+      "./images/image4.gif",
+      "./images/image5.gif",
+      "./images/image6.gif",
+      "./images/image7.gif",
+      "./images/image8.gif",
+      "./images/image9.gif",
+      "./images/image10.gif",
+    ];
+
+    const noButtonPhrases = [
+      "No", "Esti sigura?", "Hai te roggggg", "Hai stiu ca vreiii", "Pe bune frttt???", "Haiiii ca stiu ca vrei defapt", "Heiii te rogggg",
+      "Teee roggggg", "Haide mai cutie patootie", "Sunt si eu micc", "TE ROGGGGG", "PLSSS", "Te roggg multt",
+      "O sa fiu cel mai fericitt", "Te rogg frumoaso", "Te rogg printeso", "HAIII SPUNE DA", "Te roggg foarte frumosss",
+      "Pleaseeee baby", "Iti fac biscuiti", "Te imbratisez", "Te pupacesc", "Te iubesccc",
+      "HAII CA STIU CA VREI SA ZICI DA", "O SA TE MANANCCCC", "Offf esti prea frumoasa vreau sa zici da", "Sunt dependent de tineee", "Teee rogg Pookie",
+      "Haide pls cutie patootie", "Pleaseeeeeee", "Te implorrr faa", "Frumoaso nu pot trai fara tine", "O sa fiu cel mai fericit",
+      "Nu pot trai fara ochii tai", "Esti ca un drog pentru mine", "Haideee ca stiu ca vrei sa zici da", "HAII MAI ODTTT",
+      "o sa ne casatorim daca zici da", "o sa fim impreuna toata viata", "o sa te asculttt", "o sa fiu fericitttt!!",
+      "ascult orice imi zicii!!!", "tu esti sefaaa", "te tratezz ca pe o printesa", "haideee puiiii spune da", "apasaaaa pe daaa odata",
+      "haiiideeeeeee", "iubita hai apasa odata ca m am plictisit", "GLUMEAM AM RABDARE", "HEIII HAIDEEE", "DEABEA ASTEPT SA ZICI DA",
+      "FAAA SPUNEEE DA", "HAII IUBITA", "PRINTESO", "ESTI O DULCE", "FRUMOASOOO SPUNE DA",
+      "HAI CA STIU CA VREI", "STIU CA VREI MULT", "STIU CA VREI MULT DE TOT", "TE IUBESCCCC", "TE IUBESCCC MULTTTTT"
+    ];
+  
+    noButton.addEventListener('click', function() {
+      if (noClickCount < noButtonPhrases.length - 1) {
+        noClickCount++;
+        imageDisplay.src = imagePaths[noClickCount % imagePaths.length]; // Cycle through images
+        buttonHeight += 35; // Increase height by 35px on each click
+        buttonWidth += 35;
+        fontSize += 25; // Increase font size by 25px on each click
+        yesButton.style.height = `${buttonHeight}px`; // Update button height
+        yesButton.style.width = `${buttonWidth}px`;
+        yesButton.style.fontSize = `${fontSize}px`; // Update font size
+        noButton.textContent = noButtonPhrases[noClickCount]; // Update button text
+      }
+    });
+  
+    yesButton.addEventListener('click', () => {
+      imageDisplay.src = './images/image11.jpg'; // Change to image11.jpg
+      imageDisplay.classList.remove('h-[300px]'); // Remove the fixed height
+      imageDisplay.classList.add('h-[500px]', 'disco-pulse'); // Add aggressive disco pulse effect
+      valentineQuestion.textContent = "YAYAYAYYAYA AI SPUSSS DAAA"; // Change the question text
+      responseButtons.style.display = 'none'; // Hide both buttons
+      confetti(); // Trigger confetti animation
+
+      // Add disco effect to the whole page
+      body.classList.remove('gradient-background');
+      body.classList.add('disco-effect');
+
+      // Add 4 videos
+      const numberOfVideos = 4; // Number of videos to display
+      for (let i = 0; i < numberOfVideos; i++) {
+        createVideo(i === 0); // Only the first video will have sound
+      }
+
+      // Add fast rotation to the image after 3 seconds
+      setTimeout(() => {
+        imageDisplay.classList.add('fast-rotate'); // Add fast rotation class
+      }, 3000); // 3 seconds delay
+    });
+
+    // Function to create and animate a video
+    function createVideo(enableSound) {
+      const videoContainer = document.createElement('div');
+      videoContainer.classList.add('video-container');
+
+      // Random starting position
+      videoContainer.style.left = `${Math.random() * (window.innerWidth - 150)}px`;
+      videoContainer.style.top = `${Math.random() * (window.innerHeight - 150)}px`;
+
+      const video = document.createElement('video');
+      video.src = './images/video.webm'; // Path to the video (now in .webm format)
+      video.autoplay = true;
+      video.loop = true;
+      video.muted = !enableSound; // Mute all videos except the first one
+      video.controls = false; // Hide controls
+
+      videoContainer.appendChild(video);
+      document.body.appendChild(videoContainer);
+
+      // Random speed and direction
+      const speed = 5 + Math.random() * 3; // Faster speed
+      const angle = Math.random() * 2 * Math.PI; // Random direction
+      let dx = Math.cos(angle) * speed;
+      let dy = Math.sin(angle) * speed;
+
+      // Update position aggressively
+      function moveVideo() {
+        let x = parseFloat(videoContainer.style.left) || 0;
+        let y = parseFloat(videoContainer.style.top) || 0;
+
+        // Bounce off edges
+        if (x + dx < 0 || x + dx > window.innerWidth - 150) {
+          dx = -dx; // Reverse horizontal direction
+        }
+        if (y + dy < 0 || y + dy > window.innerHeight - 150) {
+          dy = -dy; // Reverse vertical direction
+        }
+
+        x += dx;
+        y += dy;
+
+        videoContainer.style.left = `${x}px`;
+        videoContainer.style.top = `${y}px`;
+
+        requestAnimationFrame(moveVideo); // Continue animation
+      }
+
+      moveVideo(); // Start moving the video
+    }
+  </script>  
+</body>
+</html>
